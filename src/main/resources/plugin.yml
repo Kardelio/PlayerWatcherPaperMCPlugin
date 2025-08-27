@@ -1,0 +1,4 @@
+name: PlayerWatcherPaperMCPlugin
+version: '1.0'
+main: bk.minecraftplugin.playerWatcherPaperMCPlugin.PlayerWatcherPaperMCPlugin
+api-version: '1.21'
