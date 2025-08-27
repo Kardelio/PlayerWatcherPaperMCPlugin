@@ -17,3 +17,15 @@ minecraft_name_to_discord_id_map=<user>:<discord_id>,<user>:<discord_id>
 So this is an example of a proper user to discrod id:
 
 `benk:12345665432` assuming benk is my minecraft username and 12345665432 is my discord ID
+
+## Build Locally a JAR to use
+
+Follow these commands:
+
+```
+./gradlew clean
+./gradlew assemble
+./gradlew shadowJar
+```
+
+Now in the `./build/libs` folder you will find the `player-watcher` jar that you can copy into your Paper MC Plugins/ dir
