@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "bk.minecraftplugin"
-version = "1.2"
+version = "1.4"
 
 repositories {
     mavenCentral()
@@ -26,6 +26,17 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.3")
 
 }
+
+tasks.register("make") {
+    // The dependsOn property is configured here.
+    dependsOn("clean", "assemble", "shadowJar")
+    tasks.findByName("assemble")?.mustRunAfter("clean")
+    tasks.findByName("shadowJar")?.mustRunAfter("assemble")
+
+    // We add a description to make it clear what the task does.
+    description = "Executes clean, assemble, and shadowJar in sequence."
+}
+
 
 sourceSets {
     main {

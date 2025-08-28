@@ -1,0 +1,58 @@
+package bk.minecraftplugin.playerWatcherPaperMCPlugin.lottery
+
+import org.bukkit.inventory.ItemStack
+import kotlin.random.Random
+
+
+class LotteryWheel {
+    private val items: MutableList<LotteryItem> = ArrayList<LotteryItem>()
+//    private val random: Random = Random()
+
+    fun LotteryWheel() {
+        // You can populate the wheel here or via a method.
+        // For example, adding some items with different rarities.
+        // For a more dynamic approach, you would load these from a config file.
+
+        // You can add items with different rarities.
+        // The total rarity doesn't need to be 1.0; the code below handles that.
+        // Example:
+        // addItem(new ItemStack(Material.DIAMOND, 1), 0.05);  // 5% chance
+        // addItem(new ItemStack(Material.IRON_INGOT, 1), 0.2); // 20% chance
+    }
+
+    fun addItem(item: ItemStack, rarity: Double) {
+        if (rarity > 0) {
+            items.add(LotteryItem(item, rarity))
+        }
+    }
+
+    /**
+     * Spins the wheel and returns a random item based on rarity.
+     * @return The randomly selected ItemStack, or null if the wheel is empty.
+     */
+    fun spin(): ItemStack {
+        if (items.isEmpty()) {
+            throw Exception("OMG")
+        }
+
+        // Calculate the total weight of all items.
+        var totalWeight = 0.0
+        for (item in items) {
+            totalWeight += item.rarity
+        }
+
+        // Generate a random number between 0 and the total weight.
+        val randomNumber: Double = Random.nextDouble() * totalWeight
+
+        // Iterate through the items and check which one "wins" the spin.
+        var currentWeight = 0.0
+        for (item in items) {
+            currentWeight += item.rarity
+            if (randomNumber <= currentWeight) {
+                // This is the chosen item. Return a copy to avoid modification.
+                return item.item.clone()
+            }
+        }
+        throw Exception("dasdad")
+    }
+}

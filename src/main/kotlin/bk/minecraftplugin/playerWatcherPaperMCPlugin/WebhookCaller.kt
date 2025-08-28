@@ -54,7 +54,19 @@ object WebhookCaller {
         }
     }
 
-    suspend fun sendMessage(playerName: String, event: PlayerEvent, currentOnline: List<String>) {
+    suspend fun sendMessage(message: String){
+        client.post(BuildConfig.WEBHOOK_URL) {
+            contentType(ContentType.Application.Json)
+            setBody(
+                Message(
+                    BOT_NAME,
+                    message
+                )
+            )
+        }
+    }
+
+    suspend fun sendMessageAboutConnectionEvent(playerName: String, event: PlayerEvent, currentOnline: List<String>) {
 //        val playerId = UserMapper.getDiscordIdFromUsername(playerName)
         client.post(BuildConfig.WEBHOOK_URL) {
             contentType(ContentType.Application.Json)

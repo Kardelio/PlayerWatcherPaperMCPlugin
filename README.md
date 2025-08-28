@@ -18,14 +18,29 @@ So this is an example of a proper user to discrod id:
 
 `benk:12345665432` assuming benk is my minecraft username and 12345665432 is my discord ID
 
+## Update the version 
+
+You need to update the version of the lib in 2 places:
+
+* ./build.gradle.kts on line 11
+* ./src/main/resources/plugin.yml on line 2
+
+once this is done you can perform a build below...
+
 ## Build Locally a JAR to use
 
-Follow these commands:
+    ./gradlew make
+
+This combination task runs the following in order:
 
 ```
 ./gradlew clean
 ./gradlew assemble
 ./gradlew shadowJar
+
 ```
 
 Now in the `./build/libs` folder you will find the `player-watcher` jar that you can copy into your Paper MC Plugins/ dir
+
+Use the `find . -name *.jar` to locate these files from term
+
