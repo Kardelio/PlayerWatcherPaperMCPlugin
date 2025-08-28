@@ -1,6 +1,8 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin.commands
 
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.ConfigCaller
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.PlayerWatcherPaperMCPlugin
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.RemoteConfigKeys
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.lottery.LotteryWheel
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -17,7 +19,7 @@ import org.bukkit.inventory.ItemStack
  */
 
 
-class TestCommand(val plugin: PlayerWatcherPaperMCPlugin) : CommandExecutor {
+class TestCommand(val plugin: PlayerWatcherPaperMCPlugin, val config: ConfigCaller) : CommandExecutor {
 
 
     companion object {
@@ -92,23 +94,17 @@ class TestCommand(val plugin: PlayerWatcherPaperMCPlugin) : CommandExecutor {
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+        if (config.getStoredConfigOnly()?.config[RemoteConfigKeys.LOTTERY] == true) {
 
-        println("----------> Command called")
-        if (sender is Player) {
-            val loc = sender.location
-//            plugin.
-            println("----------> is player!")
-            val currentTimeMillis = System.currentTimeMillis()
-            val can = checkPlayerCanPlay(plugin.config, sender)
-            if (can) {
-
-                playerPlaysLottery(sender)
-                plugin.config.set("players.${sender.uniqueId}.last_lottery_time", currentTimeMillis)
-                plugin.saveConfig()
-            } else {
-
-                sender.sendMessage("Played too recent")
-            }
+            println("Config Allows this command...")
+            if (sender is Player) {
+                val currentTimeMillis = System.currentTimeMillis()
+                val can = checkPlayerCanPlay(plugin.config, sender)
+                if (can) {
+                    playerPlaysLottery(sender)
+                    plugin.config.set("players.${sender.uniqueId}.last_lottery_time", currentTimeMillis)
+                    plugin.saveConfig()
+                }
 //            plugin.config.set("players.${sender.uniqueId}.last_lottery_time", currentTimeMillis)
 //            plugin.config.set("example.x", loc.x)
 //            plugin.saveConfig()
@@ -116,7 +112,7 @@ class TestCommand(val plugin: PlayerWatcherPaperMCPlugin) : CommandExecutor {
 //            sender.world.dropItem(sender.location, ItemStack(Material.DIAMOND, 2))
 
 
-            //WORKS
+                //WORKS
 //            object : BukkitRunnable() {
 //                override fun run() {
 //                    sender.sendMessage("Good lick")
@@ -128,8 +124,13 @@ class TestCommand(val plugin: PlayerWatcherPaperMCPlugin) : CommandExecutor {
 //                println("---- ${it.name}")
 //            }
 
+            }
+
+            return true
+        } else {
+            sender.sendMessage("§cLottery command was disabled in Remote Config")
+            return false
         }
 
-        return true
     }
 }

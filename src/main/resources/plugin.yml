@@ -2,6 +2,8 @@ name: PlayerWatcherPaperMCPlugin
 version: '@version@'
 main: bk.minecraftplugin.playerWatcherPaperMCPlugin.PlayerWatcherPaperMCPlugin
 api-version: '1.21'
-#commands:
-#  test:
-#    description: Just an example command
+commands:
+  lottery:
+    description: Play the daily lottery... Good Luck!
+  config-update:
+    description: Force the remote config to be updated

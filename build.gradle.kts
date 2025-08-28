@@ -80,6 +80,7 @@ if (localPropertiesFile.exists()) {
 }
 //project.ext.set("webhookUrl", properties.getProperty("webhook_url"))
 val webhookUrl = properties.getProperty("webhook_url") ?: ""
+val configUrl = properties.getProperty("config_url") ?: ""
 val minecraftUserToDiscordIdMapStr = properties.getProperty("minecraft_name_to_discord_id_map") ?: ""
 
 val minecraftUserToDiscordIdMap = minecraftUserToDiscordIdMapStr.split(',').associate {
@@ -117,6 +118,7 @@ tasks.register("generateBuildConfig") {
             
             object BuildConfig {
                 const val WEBHOOK_URL = "$webhookUrl"
+                const val CONFIG_URL = "$configUrl"
                 val MINECRAFT_USER_TO_DISCORD_ID_MAP = ${minecraftUserToDiscordIdMap.generateMapAsString()}
             }
             """.trimIndent()

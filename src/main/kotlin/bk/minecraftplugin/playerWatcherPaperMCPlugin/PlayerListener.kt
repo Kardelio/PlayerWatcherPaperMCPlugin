@@ -9,15 +9,21 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.logging.Logger
 
-class PlayerListener(val scope: CoroutineScope, val logger: Logger, val currentOnlinePlayers: CurrentOnlinePlayers) :
+class PlayerListener(
+    val scope: CoroutineScope,
+    val logger: Logger,
+    val currentOnlinePlayers: CurrentOnlinePlayers,
+    val configCaller: ConfigCaller
+) :
     Listener {
 
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
-        val player = event.player
-        player.sendMessage("Welcome to the server ${player.name}")
-        if (currentOnlinePlayers.addToList(player.name)) {
-            scope.launch {
+        scope.launch {
+            configCaller.getCurrentConfig(true)
+            val player = event.player
+            player.sendMessage("Welcome to the server ${player.name}")
+            if (currentOnlinePlayers.addToList(player.name)) {
                 try {
                     WebhookCaller.sendMessageAboutConnectionEvent(
                         player.name,
@@ -33,13 +39,16 @@ class PlayerListener(val scope: CoroutineScope, val logger: Logger, val currentO
 
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
-        val player = event.player
-        val location = event.player.location
         scope.launch {
-            try {
-                WebhookCaller.sendMessage("${player.name} died at X: ${location.x.toInt()}, Y: ${location.y.toInt()}, Z: ${location.z.toInt()}")
-            } catch (e: Exception) {
-                logger.warning(e.message)
+            val nowConfig = configCaller.getCurrentConfig(true)
+            if (nowConfig.config[RemoteConfigKeys.DEATH_POST] == true) {
+                val player = event.player
+                val location = event.player.location
+                try {
+                    WebhookCaller.sendMessage("${player.name} died at X: ${location.x.toInt()}, Y: ${location.y.toInt()}, Z: ${location.z.toInt()}")
+                } catch (e: Exception) {
+                    logger.warning(e.message)
+                }
             }
         }
     }

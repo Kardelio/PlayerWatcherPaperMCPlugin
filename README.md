@@ -8,10 +8,15 @@ containing the following:
 
 `minecraft_name_to_discord_id_map` is a comma separated map of minecraft username to discord ids
 
+`config_url` is web link to a google drive sheet (Public Everyone READ ONLY). An example format might look like this:
+`https://docs.google.com/spreadsheets/d/________________________/export?exportFormat=csv`
+For more information about the contents of this sheet check out the [Remote Config](#remote-config) section below...
+
 E.g....
 ```
 webhook_url=___________
 minecraft_name_to_discord_id_map=<user>:<discord_id>,<user>:<discord_id>
+config_url=___________
 ```
 
 So this is an example of a proper user to discrod id:
@@ -48,3 +53,38 @@ Now in the `./build/libs` folder you will find the `player-watcher` jar that you
 
 Use the `find . -name *.jar` to locate these files from term
 
+## Remote Config
+
+This section will explain the `config_url` parameter discussed above in the [Important Top Section](#important)
+
+This parameter is a link to a google drive sheets file that has been set to ANYONE and EVERYONE can publicly VIEW the document.
+
+Again here is an example of that url format:
+`https://docs.google.com/spreadsheets/d/________________________/export?exportFormat=csv`
+
+Notice: the end of the url is **important** the `export?exportFormat=csv` must be there.
+
+The contents of the sheet is a SINGLE TAB with 2 columns (no headers)
+
+The first column contains "Remote Config Key Names"
+
+The second column contains 0 or 1 values (0 means OFF or FALSE and 1 means ON or TRUE)
+
+These key value pairs act as a remote way to toggle config for this plugins functionality.
+
+here is an example how the sheet might look:
+
+```
+lottery-command 0
+player-death-post 0
+```
+Note: the space in the above example represents a new Cell!
+
+The server will make requests to this public sheet to get (in semi-realtime) the contents of the values here to see if features have been turned off or turned on!
+
+The server requests these values forcefully at these momenets:
+* Server start up
+* Player join server
+* Player death
+
+TODO: I want to add a time to live for this value too, so after X amount of time the server automatically re-fetches the values
