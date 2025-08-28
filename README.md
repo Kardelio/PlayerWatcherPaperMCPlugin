@@ -20,12 +20,16 @@ So this is an example of a proper user to discrod id:
 
 ## Update the version 
 
-You need to update the version of the lib in 2 places:
+Simply update the file called
 
-* ./build.gradle.kts on line 11
+`version.txt` in the root
+
+this will update the version dynamically in the following 2 places:
+
+* ./build.gradle.kts on line 20
 * ./src/main/resources/plugin.yml on line 2
 
-once this is done you can perform a build below...
+once this is done you can perform a build below... (./gradlew make)
 
 ## Build Locally a JAR to use
 

@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import java.util.*
 
 plugins {
@@ -7,8 +8,16 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.21"
 }
 
+val versionFile = File(rootProject.projectDir, "version.txt")
+val versionString = if (versionFile.exists()) {
+    versionFile.readText().trim()
+} else {
+    // A fallback in case the file doesn't exist
+    "0.0.0-SNAPSHOT"
+}
+
 group = "bk.minecraftplugin"
-version = "1.4"
+version = versionString
 
 repositories {
     mavenCentral()
@@ -35,6 +44,9 @@ tasks.register("make") {
 
     // We add a description to make it clear what the task does.
     description = "Executes clean, assemble, and shadowJar in sequence."
+    doLast {
+        println(" ==> Built version ${versionString} <==")
+    }
 }
 
 
@@ -79,7 +91,7 @@ val generatedPackage = "bk.minecraftplugin.playerWatcherPaperMCPlugin"
 val generatedFileName = "BuildConfig.kt"
 val generatedFile = File(generatedSrcDir, generatedPackage.replace(".", "/") + "/$generatedFileName")
 
-fun Map<String,String>.generateMapAsString():String{
+fun Map<String, String>.generateMapAsString(): String {
     val entries = this.entries.joinToString(",\n") { "\"${it.key}\" to \"${it.value}\"" }
     return """
         mapOf(
@@ -124,10 +136,18 @@ tasks.build {
 
 
 tasks.processResources {
+
+    // Specify the file to process (your plugin.yml)
+    // You can use a more specific filter if needed, like:
+    include("plugin.yml")
+
+    // Apply a filter that replaces a token with the version string
+    filter<ReplaceTokens>("tokens" to mapOf("version" to versionString))
     val props = mapOf("version" to version)
     inputs.properties(props)
     filteringCharset = "UTF-8"
     filesMatching("plugin.yml") {
         expand(props)
     }
+
 }
