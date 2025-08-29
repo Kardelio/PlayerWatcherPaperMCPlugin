@@ -2,6 +2,8 @@ package bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config
 
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.BuildConfig
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config.LocalConfig
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.utils.CurrentSystemTime
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.utils.CurrentSystemTimeImpl
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -31,7 +33,7 @@ interface RemoteConfigCaller {
     fun getStoredConfigOnly(): RemoteConfig?
 }
 
-class RemoteConfigCallerImpl(val localConfig: LocalConfig) : RemoteConfigCaller {
+class RemoteConfigCallerImpl(val localConfig: LocalConfig, val currentSystemTime: CurrentSystemTime = CurrentSystemTimeImpl()) : RemoteConfigCaller {
 
     companion object Companion {
         const val TIME_TILL_STALE_MILLIS = (60 * 60 * 1000).toLong() //3600000
@@ -53,7 +55,7 @@ class RemoteConfigCallerImpl(val localConfig: LocalConfig) : RemoteConfigCaller 
     }
 
     private fun storeLastTimeRequested() {
-        localConfig.saveLong(LAST_TIME_REQUESTED_KEY, System.currentTimeMillis())
+        localConfig.saveLong(LAST_TIME_REQUESTED_KEY, currentSystemTime.getCurrentSystemTimeMillis())
     }
 
     private fun getLastTimeRequested(): Long {
@@ -61,7 +63,7 @@ class RemoteConfigCallerImpl(val localConfig: LocalConfig) : RemoteConfigCaller 
     }
 
     private fun isLastTimeRequestedStale(): Boolean {
-        val currentTimeMillis = System.currentTimeMillis()
+        val currentTimeMillis = currentSystemTime.getCurrentSystemTimeMillis()
         val stale = currentTimeMillis - getLastTimeRequested() >= TIME_TILL_STALE_MILLIS
         if (stale) {
             println(" ==> isLastTimeRequestedStale IS STALE!")

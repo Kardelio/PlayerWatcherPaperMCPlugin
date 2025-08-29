@@ -4,6 +4,8 @@ import bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config.LocalConfig
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.lottery.LotteryWheel
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigCaller
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigKeys
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.utils.CurrentSystemTime
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.utils.CurrentSystemTimeImpl
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -18,7 +20,7 @@ import org.bukkit.inventory.ItemStack
  */
 
 
-class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCaller) : CommandExecutor {
+class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCaller, val currentSystemTime: CurrentSystemTime = CurrentSystemTimeImpl()) : CommandExecutor {
 
 
     companion object Companion {
@@ -36,7 +38,7 @@ class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCalle
         if (localConfig.containsValue("players." + player.uniqueId.toString() + ".last_lottery_time")) {
             val lastLotteryTime: Long =
                 localConfig.getAsLong("players." + player.uniqueId.toString() + ".last_lottery_time")
-            val currentTimeMillis = System.currentTimeMillis()
+            val currentTimeMillis = currentSystemTime.getCurrentSystemTimeMillis()
 
             // Check if a day has passed (24 hours * 60 minutes * 60 seconds * 1000 milliseconds).
 //            val oneDayInMillis = (24 * 60 * 60 * 1000).toLong()
@@ -100,7 +102,7 @@ class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCalle
 
             println("Config Allows this command...")
             if (sender is Player) {
-                val currentTimeMillis = System.currentTimeMillis()
+                val currentTimeMillis = currentSystemTime.getCurrentSystemTimeMillis()
                 val can = checkPlayerCanPlay(sender)
                 if (can) {
                     playerPlaysLottery(sender)

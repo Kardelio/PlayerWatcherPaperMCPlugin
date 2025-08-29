@@ -34,7 +34,7 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:3.2.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.3")
     testImplementation(kotlin("test"))
-
+    testImplementation("io.mockk:mockk:1.14.5")
 }
 
 tasks.register("make") {
