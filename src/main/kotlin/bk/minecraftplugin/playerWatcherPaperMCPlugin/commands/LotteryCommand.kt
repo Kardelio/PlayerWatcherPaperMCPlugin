@@ -19,15 +19,15 @@ import org.bukkit.inventory.ItemStack
  */
 
 
-class TestCommand(val plugin: PlayerWatcherPaperMCPlugin, val config: ConfigCaller) : CommandExecutor {
+class LotteryCommand(val plugin: PlayerWatcherPaperMCPlugin, val config: ConfigCaller) : CommandExecutor {
 
 
-    companion object {
+    companion object Companion {
         //24 hours
-//        val LOTTERY_DELAY_TIME_LONG = (24 * 60 * 60 * 1000).toLong()
+        val LOTTERY_DELAY_TIME_LONG = (24 * 60 * 60 * 1000).toLong()
         //60 seconds
 //        val LOTTERY_DELAY_TIME_LONG = (60 * 1000).toLong()
-        val LOTTERY_DELAY_TIME_LONG = (1000).toLong()
+//        val LOTTERY_DELAY_TIME_LONG = (1000).toLong()
     }
 
 

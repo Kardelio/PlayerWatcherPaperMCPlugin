@@ -1,7 +1,7 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin
 
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.commands.ForceConfigUpdateCommand
-import bk.minecraftplugin.playerWatcherPaperMCPlugin.commands.TestCommand
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.commands.LotteryCommand
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -64,7 +64,7 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
         getCommand(Commands.CONFIG_UPDATE_CMD)?.setExecutor(ForceConfigUpdateCommand(pluginScope, configCaller))
 
         //Optional Commands based on Remote Config
-        getCommand(Commands.LOTTERY_CMD)?.setExecutor(TestCommand(this, configCaller))
+        getCommand(Commands.LOTTERY_CMD)?.setExecutor(LotteryCommand(this, configCaller))
 
         currentOnlinePlayers = CurrentOnlinePlayers()
 
