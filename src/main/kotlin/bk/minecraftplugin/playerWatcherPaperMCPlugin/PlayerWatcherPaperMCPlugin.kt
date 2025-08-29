@@ -2,6 +2,10 @@ package bk.minecraftplugin.playerWatcherPaperMCPlugin
 
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.commands.ForceConfigUpdateCommand
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.commands.LotteryCommand
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config.LocalConfig
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config.LocalConfigImpl
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigCaller
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigCallerImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,13 +36,15 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
     private lateinit var pluginScope: CoroutineScope
     private lateinit var currentOnlinePlayers: CurrentOnlinePlayers
 
-    private lateinit var configCaller: ConfigCaller
+    private lateinit var configCaller: RemoteConfigCaller
+    private lateinit var localConfig: LocalConfig
 
     override fun onEnable() {
         pluginScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         logger.info("==> Player Watcher starting up (Version: ${this.pluginMeta.version})")
 
-        configCaller = ConfigCaller()
+        localConfig = LocalConfigImpl(this)
+        configCaller = RemoteConfigCallerImpl(localConfig)
         pluginScope.launch {
             try {
                 WebhookCaller.sendMessage("Player Watcher starting up (Version: ${this@PlayerWatcherPaperMCPlugin.pluginMeta.version})")
@@ -54,13 +60,14 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
         }
 
         //huh?
-        config.options().copyDefaults()
-        saveDefaultConfig()
+//        config.options().copyDefaults()
+//        saveDefaultConfig()
+//        localConfig = LocalConfigImpl(this)
 
         getCommand(Commands.CONFIG_UPDATE_CMD)?.setExecutor(ForceConfigUpdateCommand(pluginScope, configCaller))
 
         //Optional Commands based on Remote Config
-        getCommand(Commands.LOTTERY_CMD)?.setExecutor(LotteryCommand(this, configCaller))
+        getCommand(Commands.LOTTERY_CMD)?.setExecutor(LotteryCommand(localConfig, configCaller))
 
         currentOnlinePlayers = CurrentOnlinePlayers()
 

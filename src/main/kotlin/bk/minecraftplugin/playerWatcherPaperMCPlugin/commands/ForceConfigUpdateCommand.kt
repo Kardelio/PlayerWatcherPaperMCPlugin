@@ -1,6 +1,6 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin.commands
 
-import bk.minecraftplugin.playerWatcherPaperMCPlugin.ConfigCaller
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigCaller
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.bukkit.command.Command
@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class ForceConfigUpdateCommand(val scope: CoroutineScope, val configCaller: ConfigCaller) : CommandExecutor {
+class ForceConfigUpdateCommand(val scope: CoroutineScope, val configCaller: RemoteConfigCaller) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender is Player) {
             scope.launch {

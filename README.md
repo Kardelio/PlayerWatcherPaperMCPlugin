@@ -40,6 +40,10 @@ once this is done you can perform a build below... (./gradlew make)
 
     ./gradlew make
 
+OR (if you are offline and have the deps cached already)
+
+    ./gradlew --offline make
+
 This combination task runs the following in order:
 
 ```

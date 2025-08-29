@@ -1,5 +1,6 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin
 
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigCaller
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -14,7 +15,7 @@ class PlayerListener(
     val scope: CoroutineScope,
     val logger: Logger,
     val currentOnlinePlayers: CurrentOnlinePlayers,
-    val configCaller: ConfigCaller
+    val configCaller: RemoteConfigCaller
 ) :
     Listener {
 
@@ -26,6 +27,9 @@ class PlayerListener(
             player.sendMessage("Welcome to the server ${player.name}")
             if (currentOnlinePlayers.addToList(player.name)) {
                 try {
+//                    if (configCaller.getCurrentConfig().getValue(RemoteConfigKeys.DEATH_POST)) {
+//
+//                    }
                     WebhookCaller.sendMessageAboutConnectionEvent(
                         player.name,
                         PlayerEvent.CONNECTED,
@@ -42,7 +46,8 @@ class PlayerListener(
     fun onPlayerDeath(event: PlayerDeathEvent) {
         scope.launch {
             val nowConfig = configCaller.getCurrentConfig(true)
-            if (nowConfig.config[RemoteConfigKeys.DEATH_POST] == true) {
+//            if (nowConfig.config[RemoteConfigKeys.DEATH_POST] == true) {
+            if (nowConfig.getValue(RemoteConfigKeys.DEATH_POST)) {
                 val player = event.player
                 val location = event.player.location
                 try {

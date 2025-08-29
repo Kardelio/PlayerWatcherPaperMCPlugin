@@ -66,6 +66,19 @@ object WebhookCaller {
         }
     }
 
+    suspend fun sendMessageAboutConnectionEventWithTags(playerName: String, event: PlayerEvent, currentOnline: List<String>) {
+        val playerId = UserMapper.getDiscordIdFromUsername(playerName)
+        client.post(BuildConfig.WEBHOOK_URL) {
+            contentType(ContentType.Application.Json)
+            setBody(
+                Message(
+                    BOT_NAME,
+                    "${getMessageTextWithTag(playerId, event)}\n${getOtherOnlinePlayersMessage( currentOnline)}"
+                )
+            )
+        }
+    }
+
     suspend fun sendMessageAboutConnectionEvent(playerName: String, event: PlayerEvent, currentOnline: List<String>) {
 //        val playerId = UserMapper.getDiscordIdFromUsername(playerName)
         client.post(BuildConfig.WEBHOOK_URL) {

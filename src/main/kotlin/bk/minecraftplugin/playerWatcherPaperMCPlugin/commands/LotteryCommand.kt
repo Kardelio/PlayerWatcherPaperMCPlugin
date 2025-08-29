@@ -1,14 +1,13 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin.commands
 
-import bk.minecraftplugin.playerWatcherPaperMCPlugin.ConfigCaller
-import bk.minecraftplugin.playerWatcherPaperMCPlugin.PlayerWatcherPaperMCPlugin
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config.LocalConfig
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.lottery.LotteryWheel
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigCaller
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigKeys
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -19,7 +18,7 @@ import org.bukkit.inventory.ItemStack
  */
 
 
-class LotteryCommand(val plugin: PlayerWatcherPaperMCPlugin, val config: ConfigCaller) : CommandExecutor {
+class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCaller) : CommandExecutor {
 
 
     companion object Companion {
@@ -31,10 +30,12 @@ class LotteryCommand(val plugin: PlayerWatcherPaperMCPlugin, val config: ConfigC
     }
 
 
-    private fun checkPlayerCanPlay(config: FileConfiguration, player: Player): Boolean {
-        if (config.contains("players." + player.uniqueId.toString() + ".last_lottery_time")) {
+    private fun checkPlayerCanPlay(player: Player): Boolean {
+
+//        if (config.contains("players." + player.uniqueId.toString() + ".last_lottery_time")) {
+        if (localConfig.containsValue("players." + player.uniqueId.toString() + ".last_lottery_time")) {
             val lastLotteryTime: Long =
-                config.getLong("players." + player.uniqueId.toString() + ".last_lottery_time")
+                localConfig.getAsLong("players." + player.uniqueId.toString() + ".last_lottery_time")
             val currentTimeMillis = System.currentTimeMillis()
 
             // Check if a day has passed (24 hours * 60 minutes * 60 seconds * 1000 milliseconds).
@@ -94,16 +95,18 @@ class LotteryCommand(val plugin: PlayerWatcherPaperMCPlugin, val config: ConfigC
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        if (config.getStoredConfigOnly()?.config[RemoteConfigKeys.LOTTERY] == true) {
+//        if (config.getStoredConfigOnly()?.config[RemoteConfigKeys.LOTTERY] == true) {
+        if (config.getStoredConfigOnly()?.getValue(RemoteConfigKeys.LOTTERY) == true) {
 
             println("Config Allows this command...")
             if (sender is Player) {
                 val currentTimeMillis = System.currentTimeMillis()
-                val can = checkPlayerCanPlay(plugin.config, sender)
+                val can = checkPlayerCanPlay(sender)
                 if (can) {
                     playerPlaysLottery(sender)
-                    plugin.config.set("players.${sender.uniqueId}.last_lottery_time", currentTimeMillis)
-                    plugin.saveConfig()
+                    localConfig.saveLong("players.${sender.uniqueId}.last_lottery_time", currentTimeMillis)
+//                    plugin.config.set("players.${sender.uniqueId}.last_lottery_time", currentTimeMillis)
+//                    plugin.saveConfig()
                 }
 //            plugin.config.set("players.${sender.uniqueId}.last_lottery_time", currentTimeMillis)
 //            plugin.config.set("example.x", loc.x)
