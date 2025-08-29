@@ -1,5 +1,6 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin
 
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.bukkit.event.EventHandler

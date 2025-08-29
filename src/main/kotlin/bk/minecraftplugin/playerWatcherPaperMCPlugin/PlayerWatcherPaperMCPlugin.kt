@@ -26,10 +26,6 @@ object Commands {
     const val CONFIG_UPDATE_CMD = "config-update"
 }
 
-object RemoteConfigKeys {
-    const val LOTTERY = "lottery-command"
-    const val DEATH_POST = "player-death-post"
-}
 
 class PlayerWatcherPaperMCPlugin : JavaPlugin() {
 

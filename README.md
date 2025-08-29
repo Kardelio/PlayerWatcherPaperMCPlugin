@@ -72,6 +72,10 @@ The second column contains 0 or 1 values (0 means OFF or FALSE and 1 means ON or
 
 These key value pairs act as a remote way to toggle config for this plugins functionality.
 
+For more information about the keys and what their intended functionality is to toggle between, please see the [Remote Config Keys README File](REMOTE_CONFIG_KEYS.md) 
+
+All keys can be found IN CODE in this file: `src/main/kotlin/bk/minecraftplugin/playerWatcherPaperMCPlugin/remote_config/RemoteConfigKeys.kt`
+
 here is an example how the sheet might look:
 
 ```
@@ -86,5 +90,7 @@ The server requests these values forcefully at these momenets:
 * Server start up
 * Player join server
 * Player death
+
+AGAIN, For more information about the keys and what their intended functionality is to toggle between, please see the [Remote Config Keys README File](REMOTE_CONFIG_KEYS.md)
 
 TODO: I want to add a time to live for this value too, so after X amount of time the server automatically re-fetches the values

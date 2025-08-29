@@ -2,8 +2,8 @@ package bk.minecraftplugin.playerWatcherPaperMCPlugin.commands
 
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.ConfigCaller
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.PlayerWatcherPaperMCPlugin
-import bk.minecraftplugin.playerWatcherPaperMCPlugin.RemoteConfigKeys
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.lottery.LotteryWheel
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigKeys
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
