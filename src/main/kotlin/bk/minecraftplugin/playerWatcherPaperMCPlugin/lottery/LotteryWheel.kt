@@ -3,7 +3,6 @@ package bk.minecraftplugin.playerWatcherPaperMCPlugin.lottery
 import org.bukkit.inventory.ItemStack
 import kotlin.random.Random
 
-
 class LotteryWheel {
     private val items: MutableList<LotteryItem> = ArrayList<LotteryItem>()
 //    private val random: Random = Random()

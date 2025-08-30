@@ -51,14 +51,15 @@ class PlayerListener(
                 val player = event.player
                 val location = event.player.location
                 try {
-                    WebhookCaller.sendMessage("${player.name} died at X: ${location.x.toInt()}, Y: ${location.y.toInt()}, Z: ${location.z.toInt()}")
+                    WebhookCaller.sendMessage(
+                        "${player.name} died at X: ${location.x.toInt()}, Y: ${location.y.toInt()}, Z: ${location.z.toInt()}"
+                    )
                 } catch (e: Exception) {
                     logger.warning(e.message)
                 }
             }
         }
     }
-
 
     @EventHandler
     fun onPlayerLeave(event: PlayerQuitEvent) {
@@ -77,5 +78,4 @@ class PlayerListener(
             }
         }
     }
-
 }

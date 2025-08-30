@@ -19,21 +19,17 @@ import org.bukkit.inventory.ItemStack
  * /kill @e[type=minecraft:zombie]
  */
 
-
 class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCaller, val currentSystemTime: CurrentSystemTime = CurrentSystemTimeImpl()) : CommandExecutor {
 
-
     companion object Companion {
-        //24 hours
+        // 24 hours
         val LOTTERY_DELAY_TIME_LONG = (24 * 60 * 60 * 1000).toLong()
-        //60 seconds
+        // 60 seconds
 //        val LOTTERY_DELAY_TIME_LONG = (60 * 1000).toLong()
 //        val LOTTERY_DELAY_TIME_LONG = (1000).toLong()
     }
 
-
     private fun checkPlayerCanPlay(player: Player): Boolean {
-
 //        if (config.contains("players." + player.uniqueId.toString() + ".last_lottery_time")) {
         if (localConfig.containsValue("players." + player.uniqueId.toString() + ".last_lottery_time")) {
             val lastLotteryTime: Long =
@@ -99,7 +95,6 @@ class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCalle
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
 //        if (config.getStoredConfigOnly()?.config[RemoteConfigKeys.LOTTERY] == true) {
         if (config.getStoredConfigOnly()?.getValue(RemoteConfigKeys.LOTTERY) == true) {
-
             println("Config Allows this command...")
             if (sender is Player) {
                 val currentTimeMillis = currentSystemTime.getCurrentSystemTimeMillis()
@@ -116,19 +111,17 @@ class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCalle
 //            println("Players world: ${sender.world.name} : ${sender.world.key}")
 //            sender.world.dropItem(sender.location, ItemStack(Material.DIAMOND, 2))
 
-
-                //WORKS
+                // WORKS
 //            object : BukkitRunnable() {
 //                override fun run() {
 //                    sender.sendMessage("Good lick")
-////                    sender.world.spawnEntity(sender.location, EntityType.ZOMBIE)
+// //                    sender.world.spawnEntity(sender.location, EntityType.ZOMBIE)
 //
 //                }
 //            }.runTaskLater(plugin, 20L) // 20L is the delay in ticks (1 second).
 //            Bukkit.getWorlds().forEach {
 //                println("---- ${it.name}")
 //            }
-
             }
 
             return true
@@ -136,6 +129,5 @@ class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCalle
             sender.sendMessage("§cLottery command was disabled in Remote Config")
             return false
         }
-
     }
 }

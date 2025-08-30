@@ -12,7 +12,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.bukkit.plugin.java.JavaPlugin
 
-//fun main(args: Array<String>) = runBlocking{
+// fun main(args: Array<String>) = runBlocking{
 //    GlobalScope.launch {
 //        val configCaller = ConfigCaller()
 //        val config = configCaller.getCurrentConfig()
@@ -23,13 +23,12 @@ import org.bukkit.plugin.java.JavaPlugin
 //        val config3 = configCaller.getCurrentConfig(true)
 //        println("Current3: ${config3}")
 //    }.join()
-//}
+// }
 
 object Commands {
     const val LOTTERY_CMD = "lottery"
     const val CONFIG_UPDATE_CMD = "config-update"
 }
-
 
 class PlayerWatcherPaperMCPlugin : JavaPlugin() {
 
@@ -47,7 +46,9 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
         configCaller = RemoteConfigCallerImpl(localConfig)
         pluginScope.launch {
             try {
-                WebhookCaller.sendMessage("Player Watcher starting up (Version: ${this@PlayerWatcherPaperMCPlugin.pluginMeta.version})")
+                WebhookCaller.sendMessage(
+                    "Player Watcher starting up (Version: ${this@PlayerWatcherPaperMCPlugin.pluginMeta.version})"
+                )
             } catch (e: Exception) {
                 logger.warning(e.message)
             }
@@ -59,14 +60,14 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
             }
         }
 
-        //huh?
+        // huh?
 //        config.options().copyDefaults()
 //        saveDefaultConfig()
 //        localConfig = LocalConfigImpl(this)
 
         getCommand(Commands.CONFIG_UPDATE_CMD)?.setExecutor(ForceConfigUpdateCommand(pluginScope, configCaller))
 
-        //Optional Commands based on Remote Config
+        // Optional Commands based on Remote Config
         getCommand(Commands.LOTTERY_CMD)?.setExecutor(LotteryCommand(localConfig, configCaller))
 
         currentOnlinePlayers = CurrentOnlinePlayers()
@@ -75,7 +76,6 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
             PlayerListener(pluginScope, logger, currentOnlinePlayers, configCaller),
             this
         )
-
     }
 
     override fun onDisable() {

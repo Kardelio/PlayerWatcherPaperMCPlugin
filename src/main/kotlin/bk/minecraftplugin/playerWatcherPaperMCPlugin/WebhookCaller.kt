@@ -23,18 +23,20 @@ object WebhookCaller {
 
     val client = HttpClient(CIO) {
         install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-            })
+            json(
+                Json {
+                    prettyPrint = true
+                    isLenient = true
+                }
+            )
         }
     }
 
-    //Not used for now
+    // Not used for now
     private fun getMessageTextWithTag(playerName: String, event: PlayerEvent): String {
         return when (event) {
-            PlayerEvent.CONNECTED -> "<@${playerName}> has logged onto the server :wave:"
-            PlayerEvent.DISCONNECTED -> "<@${playerName}> has signed OUT of the server :people_hugging:"
+            PlayerEvent.CONNECTED -> "<@$playerName> has logged onto the server :wave:"
+            PlayerEvent.DISCONNECTED -> "<@$playerName> has signed OUT of the server :people_hugging:"
         }
     }
     private fun getMessageText(playerName: String, event: PlayerEvent): String {
@@ -46,7 +48,7 @@ object WebhookCaller {
 
     private fun getOtherOnlinePlayersMessage(allOnline: List<String>): String {
 //        val others = allOnline.filter { it != playerName }.joinToString("\n") { "**${it}**" }
-        val others = allOnline.joinToString("\n") { "**${it}**" }
+        val others = allOnline.joinToString("\n") { "**$it**" }
         return if (others.isNotEmpty()) {
             "*Currently Online Players:*\n$others"
         } else {
@@ -54,7 +56,7 @@ object WebhookCaller {
         }
     }
 
-    suspend fun sendMessage(message: String){
+    suspend fun sendMessage(message: String) {
         client.post(BuildConfig.WEBHOOK_URL) {
             contentType(ContentType.Application.Json)
             setBody(
@@ -73,7 +75,7 @@ object WebhookCaller {
             setBody(
                 Message(
                     BOT_NAME,
-                    "${getMessageTextWithTag(playerId, event)}\n${getOtherOnlinePlayersMessage( currentOnline)}"
+                    "${getMessageTextWithTag(playerId, event)}\n${getOtherOnlinePlayersMessage(currentOnline)}"
                 )
             )
         }
@@ -86,7 +88,7 @@ object WebhookCaller {
             setBody(
                 Message(
                     BOT_NAME,
-                    "${getMessageText(playerName, event)}\n${getOtherOnlinePlayersMessage( currentOnline)}"
+                    "${getMessageText(playerName, event)}\n${getOtherOnlinePlayersMessage(currentOnline)}"
                 )
             )
         }

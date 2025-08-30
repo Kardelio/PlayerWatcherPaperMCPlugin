@@ -17,7 +17,7 @@ data class RemoteConfig(
 ) {
     fun printOutConfig(): String {
         return config.mapNotNull { (key, value) ->
-            "${key} -> *${value}*"
+            "$key -> *$value*"
         }.joinToString("\n")
     }
 
@@ -36,9 +36,9 @@ interface RemoteConfigCaller {
 class RemoteConfigCallerImpl(val localConfig: LocalConfig, val currentSystemTime: CurrentSystemTime = CurrentSystemTimeImpl()) : RemoteConfigCaller {
 
     companion object Companion {
-        const val TIME_TILL_STALE_MILLIS = (60 * 60 * 1000).toLong() //3600000
+        const val TIME_TILL_STALE_MILLIS = (60 * 60 * 1000).toLong() // 3600000
 
-        //(60 * 60 * 1000).toLong()
+        // (60 * 60 * 1000).toLong()
         const val LAST_TIME_REQUESTED_KEY = "last_time_requested_key"
 //        60000 = 1 min
 //        3600000 = 1 hour
@@ -47,10 +47,12 @@ class RemoteConfigCallerImpl(val localConfig: LocalConfig, val currentSystemTime
     var storedConfig: RemoteConfig? = null
     val client = HttpClient(CIO) {
         install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-            })
+            json(
+                Json {
+                    prettyPrint = true
+                    isLenient = true
+                }
+            )
         }
     }
 
@@ -97,11 +99,9 @@ class RemoteConfigCallerImpl(val localConfig: LocalConfig, val currentSystemTime
                 foundConfigurations[key] = parsedBooleanValue
             }
             return RemoteConfig(foundConfigurations)
-
         } catch (e: Exception) {
             println(" ERR: ${e.message} (getRemoteConfig)")
             return storedConfig ?: throw NoStoredConfigException("No Stored config")
         }
     }
-
 }

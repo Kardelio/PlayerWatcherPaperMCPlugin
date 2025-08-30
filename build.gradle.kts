@@ -36,6 +36,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.3")
     testImplementation(kotlin("test"))
     testImplementation("io.mockk:mockk:1.14.5")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 }
 
 tasks.register("make") {
