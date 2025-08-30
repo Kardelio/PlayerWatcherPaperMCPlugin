@@ -6,6 +6,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.0"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.6.21"
+    id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
 val versionFile = File(rootProject.projectDir, "version.txt")
@@ -135,6 +136,10 @@ kotlin {
 
 tasks.build {
     dependsOn("shadowJar")
+}
+
+detekt {
+    autoCorrect = true
 }
 
 
