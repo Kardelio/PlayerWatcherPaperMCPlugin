@@ -5,6 +5,8 @@ build/
 
 # Local properties
 local.properties
+debug.properties
+prod.properties
 # mac files
 .DS_Store
 

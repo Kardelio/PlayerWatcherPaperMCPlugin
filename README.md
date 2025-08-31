@@ -1,6 +1,10 @@
 ## Important
 
-requires `local.properties` file
+requires `local.properties` file.
+
+requires `debug.properties` file for `DEBUG` builds (-Pmode=debug).
+
+requires `prod.properties` file for `PROD` builds (-Pmode=prod).
 
 containing the following:
 
@@ -38,11 +42,26 @@ once this is done you can perform a build below... (./gradlew make)
 
 ## Build Locally a JAR to use
 
-    ./gradlew make
+There are 2 variations of builds:
+
+* Production `prod`
+* Debug `debug`
+
+If you do NOT pass in the flag to the make command it will throw an error.
+
+For the corresponding build mode (prod/debug) you must ensure you have the correct properties file to provide that environments infomation.
+
+e.g. if you are doing a `-Pmode=debug` build you will need the `debug.properties` file present with the information from [here](#important)
+
+    ./gradlew make -Pmode=debug
+
+    ./gradlew make -Pmode=prod
 
 OR (if you are offline and have the deps cached already)
 
-    ./gradlew --offline make
+    ./gradlew --offline make -Pmode=debug
+
+    ./gradlew --offline make -Pmode=prod
 
 This combination task runs the following in order:
 

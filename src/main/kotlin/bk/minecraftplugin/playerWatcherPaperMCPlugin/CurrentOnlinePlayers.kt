@@ -2,7 +2,11 @@ package bk.minecraftplugin.playerWatcherPaperMCPlugin
 
 class CurrentOnlinePlayers {
 
-    // storage in mem
+    /**
+     * Specifically in memory storage used here.
+     * As if the server is down there can be no players online
+     * and the moment the server dies all players will become offline.
+     */
     val currentOnlineMinecraftUserNames = mutableListOf<String>()
 
     fun getCurrentList(): List<String> {

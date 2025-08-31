@@ -1,4 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
 import java.util.*
 
 plugins {
@@ -41,6 +40,18 @@ dependencies {
 
 tasks.register("make") {
     // The dependsOn property is configured here.
+    doFirst {
+        if (project.hasProperty("mode")) {
+            val mode = project.properties["mode"]
+            if (mode == "prod" || mode == "debug") {
+                println("Mode was set to: ${project.properties["mode"]}, continuing...")
+            } else {
+                throw IllegalStateException("MODE (mode) property required [prod, debug] e.g. -Pmode=prod")
+            }
+        } else {
+            throw IllegalStateException("MODE (mode) property required [prod, debug] e.g. -Pmode=prod")
+        }
+    }
     dependsOn("clean", "assemble", "shadowJar")
 
     tasks.findByName("assemble")?.mustRunAfter("clean")
@@ -49,7 +60,7 @@ tasks.register("make") {
     // We add a description to make it clear what the task does.
     description = "Executes clean, assemble, and shadowJar in sequence."
     doLast {
-        println(" ==> Built version ${versionString} <==")
+        println(" ==> Built version ${versionString} [${project.properties["mode"]}] <==")
     }
 }
 
@@ -76,8 +87,16 @@ tasks {
     }
 }
 
+val environmentName = project.properties["mode"] as String?
+var propFileNamePath = "local.properties"
+if (environmentName == "prod") {
+    propFileNamePath = "prod.properties"
+} else if (environmentName == "debug") {
+    propFileNamePath = "debug.properties"
+}
 val properties = Properties()
-val localPropertiesFile = file("local.properties")
+//val localPropertiesFile = file("local.properties")
+val localPropertiesFile = file(propFileNamePath)
 if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { properties.load(it) }
 }
@@ -122,6 +141,7 @@ tasks.register("generateBuildConfig") {
             object BuildConfig {
                 const val WEBHOOK_URL = "$webhookUrl"
                 const val CONFIG_URL = "$configUrl"
+                const val PROD_MODE = "${environmentName == "prod"}"
                 val MINECRAFT_USER_TO_DISCORD_ID_MAP = ${minecraftUserToDiscordIdMap.generateMapAsString()}
             }
             """.trimIndent()

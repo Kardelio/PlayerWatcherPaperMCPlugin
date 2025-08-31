@@ -41,10 +41,30 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
     override fun onEnable() {
         pluginScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         logger.info("==> Player Watcher starting up (Version: ${this.pluginMeta.version})")
-//        this.config.options().copyDefaults()
-//        this.saveDefaultConfig()
+
         localConfig = LocalConfigImpl(this)
         configCaller = RemoteConfigCallerImpl(localConfig)
+
+        printStartUpMessages()
+
+        getCommand(Commands.CONFIG_UPDATE_CMD)?.setExecutor(ForceConfigUpdateCommand(pluginScope, configCaller))
+
+        // Optional Commands based on Remote Config
+        getCommand(Commands.LOTTERY_CMD)?.setExecutor(LotteryCommand(localConfig, configCaller))
+
+        currentOnlinePlayers = CurrentOnlinePlayers()
+
+        server.pluginManager.registerEvents(
+            PlayerListener(pluginScope, logger, currentOnlinePlayers, configCaller),
+            this
+        )
+    }
+
+    override fun onDisable() {
+        logger.info("==> Player Watcher spinning down")
+    }
+
+    private fun printStartUpMessages() {
         pluginScope.launch {
             try {
                 WebhookCaller.sendMessage(
@@ -63,21 +83,5 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
                 logger.warning(e.message)
             }
         }
-
-        getCommand(Commands.CONFIG_UPDATE_CMD)?.setExecutor(ForceConfigUpdateCommand(pluginScope, configCaller))
-
-        // Optional Commands based on Remote Config
-        getCommand(Commands.LOTTERY_CMD)?.setExecutor(LotteryCommand(localConfig, configCaller))
-
-        currentOnlinePlayers = CurrentOnlinePlayers()
-
-        server.pluginManager.registerEvents(
-            PlayerListener(pluginScope, logger, currentOnlinePlayers, configCaller),
-            this
-        )
-    }
-
-    override fun onDisable() {
-        logger.info("==> Player Watcher spinning down")
     }
 }
