@@ -47,23 +47,21 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
         pluginScope.launch {
             try {
                 WebhookCaller.sendMessage(
-                    "Player Watcher starting up (Version: ${this@PlayerWatcherPaperMCPlugin.pluginMeta.version})"
+                    "**Player Watcher starting up (Version: ${this@PlayerWatcherPaperMCPlugin.pluginMeta.version})**"
                 )
             } catch (e: Exception) {
                 logger.warning(e.message)
             }
             val config = configCaller.getCurrentConfig(true)
             try {
-                WebhookCaller.sendMessage("**Current Config:**\n${config.printOutConfig()}")
+                WebhookCaller.sendMessage(
+                    "**Current Config:**\n${config.printOutConfig()}",
+                    embedsColor = DiscordColors.LIGHT_BLUE.code
+                )
             } catch (e: Exception) {
                 logger.warning(e.message)
             }
         }
-
-        // huh?
-//        config.options().copyDefaults()
-//        saveDefaultConfig()
-//        localConfig = LocalConfigImpl(this)
 
         getCommand(Commands.CONFIG_UPDATE_CMD)?.setExecutor(ForceConfigUpdateCommand(pluginScope, configCaller))
 
