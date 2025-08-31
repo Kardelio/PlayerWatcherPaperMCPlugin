@@ -20,9 +20,13 @@ enum class DiscordColors(val code: Int) {
 
 fun hexToDecimal(hexColor: String): Int {
     val cleanHex = hexColor.removePrefix("#")
-    if (cleanHex.length != 6 || !cleanHex.all { it.isDigit() || it in 'a'..'f' || it in 'A'..'F' }) throw IllegalArgumentException(
-        "Invalid hex color string. Please use a 6-digit format like 'FF0000' or '#FF0000'."
-    )
+    if (cleanHex.length != 6 || !cleanHex.all {
+            it.isDigit() || it in 'a'..'f' || it in 'A'..'F'
+        }) {
+        throw IllegalArgumentException(
+            "Invalid hex color string. Please use a 6-digit format like 'FF0000' or '#FF0000'."
+        )
+    }
     return cleanHex.toLong(16).toInt()
 }
 
@@ -36,7 +40,6 @@ sealed interface PlayerEvent {
     object CONNECTED : PlayerEvent
     object DISCONNECTED : PlayerEvent
 }
-
 
 object WebhookCaller {
 

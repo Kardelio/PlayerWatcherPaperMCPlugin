@@ -19,11 +19,16 @@ import org.bukkit.inventory.ItemStack
  * /kill @e[type=minecraft:zombie]
  */
 
-class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCaller, val currentSystemTime: CurrentSystemTime = CurrentSystemTimeImpl()) : CommandExecutor {
+class LotteryCommand(
+    val localConfig: LocalConfig,
+    val config: RemoteConfigCaller,
+    val currentSystemTime: CurrentSystemTime = CurrentSystemTimeImpl()
+) : CommandExecutor {
 
     companion object Companion {
         // 24 hours
-        val LOTTERY_DELAY_TIME_LONG = (24 * 60 * 60 * 1000).toLong()
+//        val LOTTERY_DELAY_TIME_LONG = (24 * 60 * 60 * 1000).toLong()
+        val LOTTERY_DELAY_TIME_LONG = (1000).toLong()
         // 60 seconds
 //        val LOTTERY_DELAY_TIME_LONG = (60 * 1000).toLong()
 //        val LOTTERY_DELAY_TIME_LONG = (1000).toLong()
@@ -81,6 +86,17 @@ class LotteryCommand(val localConfig: LocalConfig, val config: RemoteConfigCalle
 §o	Italic
 §r	Reset (clears all previous formatting)
      */
+
+//    private fun getWheel(): LotteryWheel {
+// //        if(wheel == null){
+// //
+// //        }else{
+// //        }
+// //        val wheel = LotteryWheel()
+// //        wheel.addItem(ItemStack(Material.DIAMOND, 1), 0.05)
+// //        wheel.addItem(ItemStack(Material.DIRT, 1), 0.75)
+// //        wheel.addItem(ItemStack(Material.IRON_INGOT, 1), 0.2)
+//    }
 
     private fun playerPlaysLottery(player: Player) {
         val wheel = LotteryWheel()

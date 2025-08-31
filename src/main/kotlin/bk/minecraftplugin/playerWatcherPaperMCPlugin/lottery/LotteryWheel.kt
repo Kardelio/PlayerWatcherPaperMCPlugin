@@ -1,23 +1,41 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin.lottery
 
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.utils.Random
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.utils.RandomImpl
 import org.bukkit.inventory.ItemStack
-import kotlin.random.Random
 
-class LotteryWheel {
+/**
+ * Wheel needs
+ * - slots fixed
+ * - items that take up x percent of slots?
+ */
+
+class LotteryWheel(val rng: Random = RandomImpl()) {
     private val items: MutableList<LotteryItem> = ArrayList<LotteryItem>()
-//    private val random: Random = Random()
 
-    fun LotteryWheel() {
-        // You can populate the wheel here or via a method.
-        // For example, adding some items with different rarities.
-        // For a more dynamic approach, you would load these from a config file.
+    //    private val random: Random = Random()
+    private lateinit var wheel: LotteryWheel
 
-        // You can add items with different rarities.
-        // The total rarity doesn't need to be 1.0; the code below handles that.
-        // Example:
-        // addItem(new ItemStack(Material.DIAMOND, 1), 0.05);  // 5% chance
-        // addItem(new ItemStack(Material.IRON_INGOT, 1), 0.2); // 20% chance
+    fun getInstance(): LotteryWheel {
+        if (this::wheel.isInitialized) {
+            return this.wheel
+        } else {
+            this.wheel = LotteryWheel()
+            return this.wheel
+        }
     }
+
+//    fun LotteryWheel() {
+    // You can populate the wheel here or via a method.
+    // For example, adding some items with different rarities.
+    // For a more dynamic approach, you would load these from a config file.
+
+    // You can add items with different rarities.
+    // The total rarity doesn't need to be 1.0; the code below handles that.
+    // Example:
+    // addItem(new ItemStack(Material.DIAMOND, 1), 0.05);  // 5% chance
+    // addItem(new ItemStack(Material.IRON_INGOT, 1), 0.2); // 20% chance
+//    }
 
     fun addItem(item: ItemStack, rarity: Double) {
         if (rarity > 0) {
@@ -40,15 +58,17 @@ class LotteryWheel {
             totalWeight += item.rarity
         }
 
-        // Generate a random number between 0 and the total weight.
-        val randomNumber: Double = Random.nextDouble() * totalWeight
+        // Generate a random number between 0 and the total weight. (1 if all percents add up to 100)
+        val randomNumber: Double = rng.genDouble() * totalWeight
 
-        // Iterate through the items and check which one "wins" the spin.
+        /**
+         * ALWAYS A NUMBER FORM 0 to 1
+         */
+
         var currentWeight = 0.0
         for (item in items) {
             currentWeight += item.rarity
             if (randomNumber <= currentWeight) {
-                // This is the chosen item. Return a copy to avoid modification.
                 return item.item.clone()
             }
         }

@@ -41,7 +41,8 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
     override fun onEnable() {
         pluginScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         logger.info("==> Player Watcher starting up (Version: ${this.pluginMeta.version})")
-
+//        this.config.options().copyDefaults()
+//        this.saveDefaultConfig()
         localConfig = LocalConfigImpl(this)
         configCaller = RemoteConfigCallerImpl(localConfig)
         pluginScope.launch {

@@ -42,6 +42,7 @@ dependencies {
 tasks.register("make") {
     // The dependsOn property is configured here.
     dependsOn("clean", "assemble", "shadowJar")
+
     tasks.findByName("assemble")?.mustRunAfter("clean")
     tasks.findByName("shadowJar")?.mustRunAfter("assemble")
 
@@ -51,7 +52,6 @@ tasks.register("make") {
         println(" ==> Built version ${versionString} <==")
     }
 }
-
 
 sourceSets {
     main {
@@ -142,21 +142,38 @@ tasks.build {
 detekt {
     autoCorrect = true
 }
-
-
 tasks.processResources {
-
-    // Specify the file to process (your plugin.yml)
-    // You can use a more specific filter if needed, like:
-    include("plugin.yml")
-
-    // Apply a filter that replaces a token with the version string
-    filter<ReplaceTokens>("tokens" to mapOf("version" to versionString))
-    val props = mapOf("version" to version)
-    inputs.properties(props)
+    // This filter will be applied to every file in the resources directory.
+    // However, it's designed to only act on the plugin.yml file.
+//    from(sourceSets.main.get().resources.srcDirs)
+//    include("plugin.yml")
     filteringCharset = "UTF-8"
-    filesMatching("plugin.yml") {
-        expand(props)
+
+    filter { line ->
+        line.replace("@version@", version.toString())
     }
 
+    into(layout.buildDirectory.dir("tmp/processedPluginYml"))
 }
+//
+//tasks.processResources {
+//
+//    filesMatching("plugin.yml") {
+//        expand(
+//            "version" to version
+//        )
+//    }
+////    // Specify the file to process (your plugin.yml)
+////    // You can use a more specific filter if needed, like:
+////    include("plugin.yml")
+////
+////    // Apply a filter that replaces a token with the version string
+////    filter<ReplaceTokens>("tokens" to mapOf("version" to versionString))
+////    val props = mapOf("version" to version)
+////    inputs.properties(props)
+////    filteringCharset = "UTF-8"
+////    filesMatching("plugin.yml") {
+////        expand(props)
+////    }
+//
+//}
