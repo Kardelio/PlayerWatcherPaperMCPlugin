@@ -1,6 +1,8 @@
 package bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config
 
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.PlayerWatcherPaperMCPlugin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 interface LocalConfig {
     fun saveString(key: String, value: String)
@@ -11,7 +13,9 @@ interface LocalConfig {
     fun getAsLong(key: String, defaultValue: Long = 0L): Long
 }
 
-class LocalConfigImpl(val plugin: PlayerWatcherPaperMCPlugin) : LocalConfig {
+class LocalConfigImpl(val plugin: PlayerWatcherPaperMCPlugin) : LocalConfig, KoinComponent {
+
+    private val str: String by inject()
 
     init {
         plugin.config.options().copyDefaults()

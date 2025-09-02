@@ -2,6 +2,7 @@ package bk.minecraftplugin.playerWatcherPaperMCPlugin
 
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.commands.ForceConfigUpdateCommand
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.commands.LotteryCommand
+import bk.minecraftplugin.playerWatcherPaperMCPlugin.di.appModule
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config.LocalConfig
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.local_config.LocalConfigImpl
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigCaller
@@ -11,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.bukkit.plugin.java.JavaPlugin
+import org.koin.core.context.startKoin
 
 // fun main(args: Array<String>) = runBlocking{
 //    GlobalScope.launch {
@@ -40,7 +42,13 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
 
     override fun onEnable() {
         pluginScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-        logger.info("==> Player Watcher starting up (Version: ${this.pluginMeta.version})")
+        logger.info(
+            "==> Player Watcher starting up (Version: ${this.pluginMeta.version}) [${if (BuildConfig.PROD_MODE == true) "PROD" else "DEBUG"}]"
+        )
+
+        startKoin {
+            modules(appModule)
+        }
 
         localConfig = LocalConfigImpl(this)
         configCaller = RemoteConfigCallerImpl(localConfig)
@@ -68,7 +76,7 @@ class PlayerWatcherPaperMCPlugin : JavaPlugin() {
         pluginScope.launch {
             try {
                 WebhookCaller.sendMessage(
-                    "**Player Watcher starting up (Version: ${this@PlayerWatcherPaperMCPlugin.pluginMeta.version})**"
+                    "**Player Watcher starting up (Version: ${this@PlayerWatcherPaperMCPlugin.pluginMeta.version})** *[${if (BuildConfig.PROD_MODE == true) "PROD" else "DEBUG"}]*"
                 )
             } catch (e: Exception) {
                 logger.warning(e.message)

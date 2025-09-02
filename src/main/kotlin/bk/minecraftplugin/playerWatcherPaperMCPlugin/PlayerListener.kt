@@ -4,6 +4,8 @@ import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigC
 import bk.minecraftplugin.playerWatcherPaperMCPlugin.remote_config.RemoteConfigKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import net.kyori.adventure.text.TranslatableComponent
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -47,8 +49,8 @@ class PlayerListener(
         scope.launch {
             val nowConfig = configCaller.getCurrentConfig(true)
 //            if (nowConfig.config[RemoteConfigKeys.DEATH_POST] == true) {
+            val player = event.player
             if (nowConfig.getValue(RemoteConfigKeys.DEATH_POST)) {
-                val player = event.player
                 val location = event.player.location
                 try {
                     WebhookCaller.sendMessage(
@@ -56,6 +58,20 @@ class PlayerListener(
                     )
                 } catch (e: Exception) {
                     logger.warning(e.message)
+                }
+            }
+            if (nowConfig.getValue(RemoteConfigKeys.PLAYER_DEATH_REASON)) {
+                val deathMessage = event.deathMessage()
+//                val out = DeathInfoParser().convertToDeathType(deathMessage)
+                if (deathMessage is TranslatableComponent) {
+                    val actualMessage = PlainTextComponentSerializer.plainText().serialize(deathMessage)
+                    try {
+                        WebhookCaller.sendMessage(
+                            ":skull_crossbones: ${actualMessage.replace(player.name, """**${player.name}**""")}"
+                        )
+                    } catch (e: Exception) {
+                        logger.warning(e.message)
+                    }
                 }
             }
         }
