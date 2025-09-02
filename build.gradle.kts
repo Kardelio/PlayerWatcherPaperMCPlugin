@@ -33,9 +33,14 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:3.2.3")
     implementation("io.ktor:ktor-client-content-negotiation:3.2.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.2.3")
+
     testImplementation(kotlin("test"))
     testImplementation("io.mockk:mockk:1.14.5")
+
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+
+    implementation(platform("io.insert-koin:koin-bom:4.1.0"))
+    implementation("io.insert-koin:koin-core")
 }
 
 tasks.register("make") {
@@ -141,7 +146,7 @@ tasks.register("generateBuildConfig") {
             object BuildConfig {
                 const val WEBHOOK_URL = "$webhookUrl"
                 const val CONFIG_URL = "$configUrl"
-                const val PROD_MODE = "${environmentName == "prod"}"
+                const val PROD_MODE = ${environmentName == "prod"}
                 val MINECRAFT_USER_TO_DISCORD_ID_MAP = ${minecraftUserToDiscordIdMap.generateMapAsString()}
             }
             """.trimIndent()
